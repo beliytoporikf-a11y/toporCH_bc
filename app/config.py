@@ -35,6 +35,8 @@ class Settings:
     telegram_bot_token: str = os.getenv("TELEGRAM_BOT_TOKEN", "")
     telegram_auth_max_age: int = int(os.getenv("TELEGRAM_AUTH_MAX_AGE", "86400"))
     telegram_admin_ids: frozenset[int] = _parse_int_set(os.getenv("TELEGRAM_ADMIN_IDS", ""))
+    telegram_api_id: int = int(os.getenv("TELEGRAM_API_ID", "0") or "0")
+    telegram_api_hash: str = os.getenv("TELEGRAM_API_HASH", "")
 
     storage_provider: str = os.getenv("STORAGE_PROVIDER", "supabase").lower()
     supabase_url: str = os.getenv("SUPABASE_URL", "")

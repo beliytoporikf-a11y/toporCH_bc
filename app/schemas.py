@@ -22,6 +22,35 @@ class AdminBootstrapPayload(BaseModel):
     bot_token: str
 
 
+class TelegramCodeStartPayload(BaseModel):
+    telegram_id: int
+
+
+class TelegramCodeStartResponse(BaseModel):
+    challenge_id: str
+    expires_in: int
+
+
+class TelegramCodeVerifyPayload(BaseModel):
+    challenge_id: str
+    code: str
+
+
+class TelegramMtprotoSendCodePayload(BaseModel):
+    phone: str
+
+
+class TelegramMtprotoSendCodeResponse(BaseModel):
+    challenge_id: str
+    expires_in: int
+
+
+class TelegramMtprotoVerifyCodePayload(BaseModel):
+    challenge_id: str
+    code: str
+    password: str | None = None
+
+
 class MeResponse(BaseModel):
     id: int
     telegram_id: int
