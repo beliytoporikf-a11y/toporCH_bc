@@ -33,6 +33,12 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 - `Start Command`: `uvicorn main:app --host 0.0.0.0 --port $PORT`;
 - Python фиксирован в `backend/runtime.txt` (`3.13.2`), чтобы избежать сборки `pydantic-core` через Rust.
 
+Если Render всё равно берёт Python `3.14` и пытается собрать `pydantic-core` через Rust (ошибка `maturin/cargo`),
+используй Docker деплой:
+- выбери тип сервиса `Docker`;
+- `Root Directory`: `backend`;
+- никаких build/start команд не нужно — всё в `backend/Dockerfile`.
+
 Проверка:
 - `GET http://127.0.0.1:8000/health`
 - Swagger: `http://127.0.0.1:8000/docs`
