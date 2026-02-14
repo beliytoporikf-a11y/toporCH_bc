@@ -17,6 +17,10 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
 
+class AdminBootstrapPayload(BaseModel):
+    telegram_id: int
+    bot_token: str
+
 
 class MeResponse(BaseModel):
     id: int

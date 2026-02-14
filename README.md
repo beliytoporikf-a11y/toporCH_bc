@@ -27,6 +27,12 @@ copy .env.example .env
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
+Для Render:
+- в `Root Directory` укажи `backend`;
+- `Build Command`: `pip install -r requirements.txt`;
+- `Start Command`: `uvicorn main:app --host 0.0.0.0 --port $PORT`;
+- Python фиксирован в `backend/runtime.txt` (`3.13.2`), чтобы избежать сборки `pydantic-core` через Rust.
+
 Проверка:
 - `GET http://127.0.0.1:8000/health`
 - Swagger: `http://127.0.0.1:8000/docs`
@@ -83,3 +89,10 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 2. Плейлисты и синхронизацию изменений `since`.
 3. Refresh-token и отзыв токенов.
 4. Rate-limit и аудит-логи.
+
+## Keepalive (обход sleep/free downtime)
+
+- Добавлен workflow: `.github/workflows/keepalive.yml`.
+- Добавь в GitHub Secrets:
+  - `KEEPALIVE_URL=https://<your-service>.onrender.com/health`
+- Пинг будет идти каждые 10 минут.

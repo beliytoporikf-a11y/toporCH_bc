@@ -7,7 +7,7 @@ from app.auth_telegram import verify_telegram_login
 from app.config import settings
 from app.database import get_db
 from app.models import User
-from app.schemas import MeResponse, TelegramLoginPayload, TokenResponse
+from app.schemas import AdminBootstrapPayload, MeResponse, TelegramLoginPayload, TokenResponse
 from app.security import create_access_token, get_current_user
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -43,6 +43,30 @@ def telegram_login(payload: TelegramLoginPayload, db: Session = Depends(get_db))
 
     token = create_access_token(user.id)
     return TokenResponse(access_token=token)
+
+@router.post("/telegram/admin-bootstrap", response_model=TokenResponse)
+def telegram_admin_bootstrap(payload: AdminBootstrapPayload, db: Session = Depends(get_db)):
+    if payload.bot_token != settings.telegram_bot_token:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid bot token")
+    if payload.telegram_id not in settings.telegram_admin_ids:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not in admin list")
+
+    user = db.query(User).filter(User.telegram_id == payload.telegram_id).first()
+    if user is None:
+        user = User(
+            telegram_id=payload.telegram_id,
+            username=None,
+            first_name=None,
+            last_name=None,
+            photo_url=None,
+            is_admin=True,
+        )
+        db.add(user)
+    else:
+        user.is_admin = True
+    db.commit()
+    db.refresh(user)
+    return TokenResponse(access_token=create_access_token(user.id))
 
 
 @router.get("/me", response_model=MeResponse)
